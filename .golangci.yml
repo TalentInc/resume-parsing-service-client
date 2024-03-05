@@ -1,0 +1,14 @@
+# see https://golangci-lint.run/usage/linters/
+linters:
+  enable:
+    - bodyclose
+    - godot
+    - cyclop
+    - gomnd
+
+linters-settings:
+  cyclop:
+    max-complexity: 5
+
+run:
+  tests: false
