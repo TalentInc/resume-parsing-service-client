@@ -1,6 +1,6 @@
 module github.com/TalentInc/resume-parsing-service-client
 
-go 1.21.5
+go 1.22
 
 require (
 	github.com/hashicorp/go-retryablehttp v0.7.5
