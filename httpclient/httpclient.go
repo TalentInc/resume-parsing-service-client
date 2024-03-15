@@ -43,7 +43,7 @@ var (
 		}
 		return nil
 	}
-	decodeResponse = func(url string, resp *http.Response, v any) error {
+	decodeResponse = func(url string, resp *http.Response, v interface{}) error {
 		if v != nil {
 			if resp != nil {
 				defer resp.Body.Close()
@@ -58,7 +58,7 @@ var (
 		}
 		return nil
 	}
-	jsonDecode = func(r io.Reader, data any) error {
+	jsonDecode = func(r io.Reader, data interface{}) error {
 		return json.NewDecoder(r).Decode(data)
 	}
 	ioReadAll = func(r io.Reader) ([]byte, error) {
@@ -74,7 +74,7 @@ type Client interface {
 
 	// SendRequestAndUnmarshallJsonResponse sends an HTTP request and
 	// unmarshals the JSON response into a provided variable.
-	SendRequestAndUnmarshallJsonResponse(req *http.Request, v any) (*http.Response, error)
+	SendRequestAndUnmarshallJsonResponse(req *http.Request, v interface{}) (*http.Response, error)
 }
 
 // client implements Client interface.
@@ -137,7 +137,7 @@ func New(options ...Option) Client {
 }
 
 // do performs a request and parses the response to the given interface, if provided.
-func (c *client) do(req *retryablehttp.Request, v any) (*http.Response, error) {
+func (c *client) do(req *retryablehttp.Request, v interface{}) (*http.Response, error) {
 	resp, err := c.retryableHttpClient.Do(req)
 	if err := handleUnsuccessfulResponse(req.URL.String(), resp, err); err != nil {
 		return resp, err
@@ -159,7 +159,7 @@ func (c *client) logRequestDump(req *http.Request) {
 }
 
 // sendRequest sends a request with or without payload.
-func (c *client) sendRequest(req *http.Request, v any) (*http.Response, error) {
+func (c *client) sendRequest(req *http.Request, v interface{}) (*http.Response, error) {
 	c.logRequestDump(req)
 	resp, err := c.do(&retryablehttp.Request{Request: req}, v)
 	if err != nil {
@@ -175,6 +175,6 @@ func (c *client) SendRequest(req *http.Request) (*http.Response, error) {
 
 // SendRequestAndUnmarshallJsonResponse sends an HTTP request \
 // and unmarshalls the responseBody to the given interface.
-func (c *client) SendRequestAndUnmarshallJsonResponse(req *http.Request, v any) (*http.Response, error) {
+func (c *client) SendRequestAndUnmarshallJsonResponse(req *http.Request, v interface{}) (*http.Response, error) {
 	return c.sendRequest(req, v)
 }
